@@ -94,7 +94,6 @@ const registerSeller = async (req, res) => {
     // Generate email token
     const emailToken = generateEmailToken(seller._id); // pass seller._id
     seller.emailToken = emailToken;
-  // Set expiry for 24 hours
     seller.emailTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000);
     await seller.save();
 
