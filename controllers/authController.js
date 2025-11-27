@@ -94,12 +94,13 @@ const registerSeller = async (req, res) => {
     // Generate email token
     const emailToken = generateEmailToken(seller._id); // pass seller._id
     seller.emailToken = emailToken;
-    seller.emailTokenExpiry = new Date(Date.now() + 5 * 60 * 1000);
+  // Set expiry for 24 hours
+    seller.emailTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000);
     await seller.save();
 
     // 7️⃣ Send confirmation email
     const confirmUrl = `${process.env.FRONTEND_URL}/verify-email/${emailToken}`;
-    const html = `
+   const html = `
 <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f7; padding: 40px 0;">
   <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden; border-top: 6px solid #f87171;">
     
@@ -112,7 +113,8 @@ const registerSeller = async (req, res) => {
     <!-- Body -->
     <div style="padding: 0 30px 40px;">
       <p style="color: #555555; font-size: 16px; line-height: 1.6;">
-        Thank you for signing up with TradeOct Auction. To start using your account, please confirm your email address by clicking the button below.
+        Thank you for signing up with TradeOct Auction. To activate your account and start using our platform,
+        please confirm your email address by clicking the button below.
       </p>
       
       <!-- Button -->
@@ -123,8 +125,15 @@ const registerSeller = async (req, res) => {
         </a>
       </div>
 
-      <p style="color: #999999; font-size: 14px; text-align: center;">
-        If you did not sign up for this account, you can safely ignore this email.
+      <!-- Additional Message -->
+      <p style="color: #555555; font-size: 15px; line-height: 1.6; margin-top: 20px;">
+        This link will expire in <strong>24 hours</strong>.  
+        If you did not sign up for a TradeOct account, you can safely ignore this email.
+      </p>
+
+      <p style="color: #555555; font-size: 15px; line-height: 1.6; margin-top: 30px;">
+        Best regards,<br />
+        <strong>The TradeOct Auction Team</strong>
       </p>
     </div>
 
@@ -136,6 +145,7 @@ const registerSeller = async (req, res) => {
   </div>
 </div>
 `;
+
 
     await sendEmail(seller.email, "Email Confirmation - TradeOct", html);
 

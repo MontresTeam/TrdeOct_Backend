@@ -2,9 +2,8 @@ const mongoose = require("mongoose");
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI, {
-      serverSelectionTimeoutMS: 10000, // 10 sec timeout
-    });
+    await mongoose.connect('mongodb+srv://farhandev24_db_user:farru40123ra@cluster0.rzs5wtu.mongodb.net/?retryWrites=true&w=majority', {
+    });  
 
     console.log("✅ MongoDB Connected Successfully");
   } catch (error) {
